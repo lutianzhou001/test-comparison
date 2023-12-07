@@ -1,67 +1,13 @@
-## Foundry
+# test struct/arrays with 1,5,10 times
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+| test/gasComparision.t.sol:AccountImpl contract |                 |       |        |       |         |
+|------------------------------------------------|-----------------|-------|--------|-------|---------|
+| Deployment Cost                                | Deployment Size |       |        |       |         |
+| 331768                                         | 1689            |       |        |       |         |
+| Function Name                                  | min             | avg   | median | max   | # calls |
+| execute((address,uint256,bytes))               | 10171           | 10171 | 10171  | 10171 | 1       |
+| execute(address,uint256,bytes)                 | 10055           | 10055 | 10055  | 10055 | 1       |
+| executeBatch((address,uint256,bytes)[])        | 10888           | 45199 | 42560  | 82150 | 3       |
+| executeBatch(address[],uint256[],bytes[])      | 11099           | 44032 | 41499  | 79499 | 3       |
 
-Foundry consists of:
-
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
-```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
-# test-comparison
+This code shows the struct is cheaper when only one call is executed, but when the calls is greater, seems the arrays are cheaper.

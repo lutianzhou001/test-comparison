@@ -158,6 +158,4 @@ contract GasComparisonExecute is Test {
 
         account.executeBatch(execs);
     }
-
-
 }
