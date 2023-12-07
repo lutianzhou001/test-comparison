@@ -72,7 +72,7 @@ contract GasComparisonExecute is Test {
         account.execute(dest, value, callData);
     }
 
-    function testGasThree() public {
+    function testGasForArray1Time() public {
         address dest = address(target);
         address[] memory dests = new address[](1);
         dests[0] = dest;
@@ -86,7 +86,7 @@ contract GasComparisonExecute is Test {
         account.executeBatch(dests, values, datas);
     }
 
-    function testGasFour() public {
+    function testGasForStruct1Time() public {
         address dest = address(target);
         uint256 value = 1;
         bytes memory callData = abi.encodeCall(Target.setValue, (1));
@@ -96,4 +96,68 @@ contract GasComparisonExecute is Test {
 
         account.executeBatch(execs);
     }
+
+    function testGasForArray5Times() public {
+        address[] memory dests = new address[](5);
+        uint256[] memory values = new uint256[](5);
+        bytes[] memory datas = new bytes[](5);
+
+        for (uint256 i = 0; i < 5; i++) {
+            address dest = address(target);
+            dests[i] = dest;
+            uint256 value = 1;
+            values[i] = value;
+            bytes memory callData = abi.encodeCall(Target.setValue, (1));
+            datas[i] = callData;
+        }
+
+        account.executeBatch(dests, values, datas);
+    }
+
+    function testForStruct5Times() public {
+        AccountImpl.Execution[] memory execs = new AccountImpl.Execution[](5);
+
+        for (uint256 i = 0; i < 5; i++) {
+            address dest = address(target);
+            uint256 value = 1;
+            bytes memory callData = abi.encodeCall(Target.setValue, (1));
+
+            execs[i] = AccountImpl.Execution(dest, value, callData);
+        }
+
+        account.executeBatch(execs);
+    }
+
+    function testGasForArray10Times() public {
+        address[] memory dests = new address[](10);
+        uint256[] memory values = new uint256[](10);
+        bytes[] memory datas = new bytes[](10);
+
+        for (uint256 i = 0; i < 10; i++) {
+            address dest = address(target);
+            dests[i] = dest;
+            uint256 value = 1;
+            values[i] = value;
+            bytes memory callData = abi.encodeCall(Target.setValue, (1));
+            datas[i] = callData;
+        }
+
+        account.executeBatch(dests, values, datas);
+    }
+
+    function testForStruct10Times() public {
+        AccountImpl.Execution[] memory execs = new AccountImpl.Execution[](10);
+
+        for (uint256 i = 0; i < 10; i++) {
+            address dest = address(target);
+            uint256 value = 1;
+            bytes memory callData = abi.encodeCall(Target.setValue, (1));
+
+            execs[i] = AccountImpl.Execution(dest, value, callData);
+        }
+
+        account.executeBatch(execs);
+    }
+
+
 }
