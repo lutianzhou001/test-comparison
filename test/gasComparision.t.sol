@@ -19,12 +19,16 @@ contract AccountImpl {
         bytes data;
     }
 
-    function execute(address dest, uint256 value, bytes calldata func) external {
-        dest.call{ value: value }(func);
+    function execute(
+        address dest,
+        uint256 value,
+        bytes calldata func
+    ) external {
+        dest.call{value: value}(func);
     }
 
     function execute(Execution calldata exec) external {
-        exec.dest.call{ value: exec.value }(exec.data);
+        exec.dest.call{value: exec.value}(exec.data);
     }
 
     function executeBatch(
@@ -33,13 +37,34 @@ contract AccountImpl {
         bytes[] calldata datas
     ) external {
         for (uint256 i = 0; i < dests.length; i++) {
-            dests[i].call{ value: values[i] }(datas[i]);
+            dests[i].call{value: values[i]}(datas[i]);
         }
     }
 
     function executeBatch(Execution[] calldata execs) external {
         for (uint256 i = 0; i < execs.length; i++) {
-            execs[i].dest.call{ value: execs[i].value }(execs[i].data);
+            execs[i].dest.call{value: execs[i].value}(execs[i].data);
+        }
+    }
+
+    function executeBatch_(
+        address[] calldata dests,
+        uint256[] calldata values,
+        bytes[] calldata datas
+    ) external {
+        uint256 length = dests.length;
+        require(length == values.length);
+        require(length == datas.length);
+        for (uint256 i = 0; i < length; i++) {
+            dests[i].call{value: values[i]}(datas[i]);
+        }
+    }
+
+    function executeBatch_(Execution[] calldata execs) external {
+        uint256 length = execs.length;
+        for (uint256 i = 0; i < length; i++) {
+            Execution calldata exec = execs[i];
+            exec.dest.call{value: exec.value}(exec.data);
         }
     }
 }
@@ -59,7 +84,11 @@ contract GasComparisonExecute is Test {
         address dest = address(target);
         uint256 value = 1;
         bytes memory callData = abi.encodeCall(Target.setValue, (1));
-        AccountImpl.Execution memory exec = AccountImpl.Execution(dest, value, callData);
+        AccountImpl.Execution memory exec = AccountImpl.Execution(
+            dest,
+            value,
+            callData
+        );
 
         account.execute(exec);
     }
@@ -84,6 +113,7 @@ contract GasComparisonExecute is Test {
         datas[0] = callData;
 
         account.executeBatch(dests, values, datas);
+        account.executeBatch_(dests, values, datas);
     }
 
     function testGasForStruct1Time() public {
@@ -95,6 +125,7 @@ contract GasComparisonExecute is Test {
         execs[0] = AccountImpl.Execution(dest, value, callData);
 
         account.executeBatch(execs);
+        account.executeBatch_(execs);
     }
 
     function testGasForArray5Times() public {
@@ -112,6 +143,7 @@ contract GasComparisonExecute is Test {
         }
 
         account.executeBatch(dests, values, datas);
+        account.executeBatch_(dests, values, datas);
     }
 
     function testForStruct5Times() public {
@@ -126,6 +158,7 @@ contract GasComparisonExecute is Test {
         }
 
         account.executeBatch(execs);
+        account.executeBatch_(execs);
     }
 
     function testGasForArray10Times() public {
@@ -143,6 +176,7 @@ contract GasComparisonExecute is Test {
         }
 
         account.executeBatch(dests, values, datas);
+        account.executeBatch_(dests, values, datas);
     }
 
     function testForStruct10Times() public {
@@ -157,5 +191,6 @@ contract GasComparisonExecute is Test {
         }
 
         account.executeBatch(execs);
+        account.executeBatch_(execs);
     }
 }
