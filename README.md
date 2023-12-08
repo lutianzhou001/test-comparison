@@ -1,4 +1,4 @@
-# test result in 1,5,10 times
+# test result in 1,5,10 elements
 
 Test result: ok. 8 passed; 0 failed; 0 skipped; finished in 1.52ms
 | test/gasComparision.t.sol:AccountImpl contract |                 |       |        |       |         |
