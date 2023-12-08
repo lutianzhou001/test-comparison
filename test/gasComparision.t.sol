@@ -31,22 +31,6 @@ contract AccountImpl {
         exec.dest.call{value: exec.value}(exec.data);
     }
 
-    function executeBatch(
-        address[] calldata dests,
-        uint256[] calldata values,
-        bytes[] calldata datas
-    ) external {
-        for (uint256 i = 0; i < dests.length; i++) {
-            dests[i].call{value: values[i]}(datas[i]);
-        }
-    }
-
-    function executeBatch(Execution[] calldata execs) external {
-        for (uint256 i = 0; i < execs.length; i++) {
-            execs[i].dest.call{value: execs[i].value}(execs[i].data);
-        }
-    }
-
     function executeBatch_(
         address[] calldata dests,
         uint256[] calldata values,
@@ -112,7 +96,6 @@ contract GasComparisonExecute is Test {
         bytes[] memory datas = new bytes[](1);
         datas[0] = callData;
 
-        account.executeBatch(dests, values, datas);
         account.executeBatch_(dests, values, datas);
     }
 
@@ -124,7 +107,6 @@ contract GasComparisonExecute is Test {
         AccountImpl.Execution[] memory execs = new AccountImpl.Execution[](1);
         execs[0] = AccountImpl.Execution(dest, value, callData);
 
-        account.executeBatch(execs);
         account.executeBatch_(execs);
     }
 
@@ -142,7 +124,6 @@ contract GasComparisonExecute is Test {
             datas[i] = callData;
         }
 
-        account.executeBatch(dests, values, datas);
         account.executeBatch_(dests, values, datas);
     }
 
@@ -157,7 +138,6 @@ contract GasComparisonExecute is Test {
             execs[i] = AccountImpl.Execution(dest, value, callData);
         }
 
-        account.executeBatch(execs);
         account.executeBatch_(execs);
     }
 
@@ -175,7 +155,6 @@ contract GasComparisonExecute is Test {
             datas[i] = callData;
         }
 
-        account.executeBatch(dests, values, datas);
         account.executeBatch_(dests, values, datas);
     }
 
@@ -190,7 +169,6 @@ contract GasComparisonExecute is Test {
             execs[i] = AccountImpl.Execution(dest, value, callData);
         }
 
-        account.executeBatch(execs);
         account.executeBatch_(execs);
     }
 }
